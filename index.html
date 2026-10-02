@@ -288,6 +288,16 @@
     <div class="wizard-step max-w-md mx-auto px-5 pt-4" data-step="2">
       <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
         <h2 class="text-base font-bold text-gray-900 mb-4">Your details</h2>
+        <div id="signedInBanner" class="hidden mb-4 bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+          <div class="flex items-start gap-2">
+            <svg class="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-[11px] text-emerald-900 leading-snug">
+              Signed in as <strong id="signedInPhone">&mdash;</strong>. Details pre-filled — you can edit them if needed.
+            </p>
+          </div>
+        </div>
         <div class="space-y-3.5">
           <div>
             <label class="block text-xs font-medium text-gray-600 mb-1.5">Full Name (as per National ID)</label>
@@ -306,6 +316,7 @@
           <div>
             <label class="block text-xs font-medium text-gray-600 mb-1.5">Password (min. 6 characters)</label>
             <input type="password" id="wizPassword" required minlength="6" class="w-full border border-gray-200 bg-gray-50 rounded-xl px-3 py-3 text-sm outline-none focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-colors" />
+            <p id="wizPasswordHint" class="hidden text-[10px] text-emerald-600 mt-1">Already signed in — you can leave this as is.</p>
           </div>
         </div>
         <div class="flex gap-2 mt-5">
@@ -517,6 +528,20 @@
           <input type="tel" id="mpesaPhone" required inputmode="numeric" placeholder="07XX XXX XXX" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm font-mono outline-none focus:ring-2 focus:ring-emerald-500" />
           <p class="text-[10px] text-gray-400 mt-1">You can change this if paying from a different line.</p>
         </div>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <div class="flex items-start gap-2">
+            <svg class="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <p class="text-[11px] text-blue-900 leading-snug">
+                Payment is made to <strong class="font-bold">PALPLUSS FUTURE</strong> — this is the name that will appear on your M-Pesa statement and prompt.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 text-[11px] text-gray-600">
           You'll receive a prompt on your phone. Enter your PIN to authorise.
         </div>
@@ -573,6 +598,17 @@
         </div>
       </div>
 
+      <div class="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-2.5">
+        <div class="flex items-start gap-2">
+          <svg class="w-3.5 h-3.5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <p class="text-[10px] text-blue-900 leading-snug">
+            Payment goes to <strong>PALPLUSS FUTURE</strong> — you'll see this name on the M-Pesa prompt and on your statement.
+          </p>
+        </div>
+      </div>
+
       <div class="mt-4 pt-4 border-t border-gray-100">
         <div class="flex items-center justify-between mb-2">
           <h4 class="text-xs font-semibold text-gray-500 uppercase">Change Amount</h4>
@@ -591,7 +627,6 @@
         <div id="confirmAmountBoxes" class="grid grid-cols-3 gap-1.5"></div>
       </div>
 
-      <!-- BOLD warning — dynamic fee + loan amount -->
       <div class="mt-4 bg-gradient-to-br from-red-600 to-red-700 rounded-2xl p-4 shadow-xl border-2 border-red-800 animate-pulse-slow">
         <div class="flex items-start gap-3">
           <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-md">
@@ -610,7 +645,6 @@
         </div>
       </div>
 
-      <!-- Try a Lower Amount -->
       <button id="lowerAmountBtn" onclick="tryLowerAmount()" class="mt-4 w-full bg-blue-50 border-2 border-blue-300 text-blue-900 py-3 rounded-xl font-bold text-sm active:scale-[0.98] transition-transform">
         <div class="flex flex-col items-center leading-tight">
           <div class="flex items-center gap-2">
@@ -659,6 +693,12 @@
 
       <h2 class="text-lg font-extrabold text-gray-900 leading-tight">Check your phone</h2>
       <p class="text-xs text-gray-500 mt-1">Enter your M-Pesa PIN to complete payment</p>
+
+      <div class="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-2.5">
+        <p class="text-[10px] text-blue-900 leading-snug">
+          The prompt and your statement will show <strong>PALPLUSS FUTURE</strong> as the recipient.
+        </p>
+      </div>
 
       <div class="mt-4 flex items-center justify-center gap-1.5">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dot-fade" style="animation-delay:0s"></span>
@@ -730,6 +770,10 @@
             <span class="font-mono text-[11px] font-medium text-gray-800" id="procRef">&mdash;</span>
           </div>
           <div class="flex justify-between items-center border-t border-gray-100 pt-3">
+            <span class="text-gray-500 text-xs">Paid To</span>
+            <span class="font-semibold text-[11px] text-gray-800">PALPLUSS FUTURE</span>
+          </div>
+          <div class="flex justify-between items-center border-t border-gray-100 pt-3">
             <span class="text-gray-500 text-xs">Loan Amount</span>
             <div class="text-right">
               <p class="font-bold text-sm text-gray-900" id="procAmount">&mdash;</p>
@@ -792,7 +836,6 @@
       21000, 25000, 30000
     ];
 
-    // Whole numbers show without decimals (KSh 50), decimals still show (KSh 50.50)
     const fmt = (n) => {
       const num = Number(n || 0);
       const isWhole = Number.isInteger(num);
@@ -844,6 +887,12 @@
       const p = normalizePhone(input);
       if (p.length !== 12) return input;
       return `+${p.slice(0, 3)} ${p.slice(3, 6)} ${p.slice(6, 9)} ${p.slice(9)}`;
+    }
+
+    // Derive the phone number from a session's email if the profile is missing
+    function phoneFromEmail(email) {
+      if (!email) return '';
+      return normalizePhone(String(email).split('@')[0]);
     }
 
     let toastTimer = null;
@@ -935,7 +984,6 @@
       }, 1000);
     }
 
-    // ── Hold-to-confirm ──
     let holdTimer = null;
     let holdRAF = null;
     let holdStart = 0;
@@ -999,7 +1047,6 @@
       setTimeout(() => { confirmPaymentAndProceed(); }, 200);
     }
 
-    // ── Try a Lower Amount ──
     function tryLowerAmount() {
       if (!confirmSelectedAmount) return;
       const currentIdx = AMOUNT_STEPS.indexOf(confirmSelectedAmount);
@@ -1069,6 +1116,48 @@
       }
     }
 
+    // ── Prefill wizard from signed-in user ──
+    function prefillWizardForSignedInUser() {
+      const banner = $('signedInBanner');
+      const bannerPhone = $('signedInPhone');
+      const pwdHint = $('wizPasswordHint');
+
+      if (!currentUser) {
+        if (banner) banner.classList.add('hidden');
+        if (pwdHint) pwdHint.classList.add('hidden');
+        return;
+      }
+
+      // Fill phone from profile or email
+      const emailPhone = phoneFromEmail(currentUser.email);
+      const profilePhone = currentProfile?.phone ? normalizePhone(currentProfile.phone) : emailPhone;
+
+      if (profilePhone) {
+        $('wizPhone').value = formatPhoneDisplay(profilePhone);
+        $('wizPhone').readOnly = true;
+        $('wizPhone').classList.add('bg-emerald-50', 'border-emerald-200');
+      }
+
+      if (currentProfile?.full_name) {
+        $('wizName').value = currentProfile.full_name;
+      }
+
+      if (currentProfile?.national_id) {
+        $('wizId').value = currentProfile.national_id;
+      }
+
+      // For a signed-in user we don't re-ask for a password
+      $('wizPassword').required = false;
+      $('wizPassword').placeholder = 'Already signed in';
+      $('wizPassword').value = '';
+
+      if (banner && bannerPhone) {
+        bannerPhone.textContent = profilePhone ? formatPhoneDisplay(profilePhone) : 'your account';
+        banner.classList.remove('hidden');
+      }
+      if (pwdHint) pwdHint.classList.remove('hidden');
+    }
+
     let wizardCurrentStep = 1;
     function openApplyWizard() {
       wizardCurrentStep = 1;
@@ -1076,6 +1165,7 @@
       renderWizardAmountBoxes();
       updateWizardSelectedDisplay();
       updateWizardUI();
+      prefillWizardForSignedInUser();
       showView('applyWizardView');
     }
 
@@ -1114,7 +1204,10 @@
         if (!name) return showWizardError('Please enter your full name.');
         if (!/^\d{7,8}$/.test(id)) return showWizardError('National ID must be 7 or 8 digits.');
         if (!isValidKePhone(phone)) return showWizardError('Enter a valid phone number.');
-        if (password.length < 6) return showWizardError('Password must be at least 6 characters.');
+        // Only require a password if not signed in
+        if (!currentUser && password.length < 6) {
+          return showWizardError('Password must be at least 6 characters.');
+        }
       }
 
       if (toStep === 3) {
@@ -1284,8 +1377,8 @@
       }
 
       currentUser = data.user;
-      const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
-      currentProfile = profile;
+      const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).maybeSingle();
+      currentProfile = profile || null;
 
       if (pendingApplication) {
         const { amount, tenure } = pendingApplication;
@@ -1371,6 +1464,11 @@
       return { appData };
     }
 
+    // ─────────────────────────────────────────────────────────────
+    // FIXED submitApplication
+    // Only checks `currentUser` (not `currentUser && currentProfile`).
+    // Falls back to email-derived phone when the profile row is missing.
+    // ─────────────────────────────────────────────────────────────
     async function submitApplication() {
       const btn = $('wizSubmitBtn');
       const btnText = $('wizSubmitText');
@@ -1406,9 +1504,24 @@
       btn.disabled = true;
       btnText.innerHTML = spinner() + ' Checking...';
 
-      if (currentUser && currentProfile) {
-        const profilePhone = currentProfile.phone ? normalizePhone(currentProfile.phone) : '';
+      // ── Signed-in path ──
+      if (currentUser) {
+        // Make sure we have a profile. If not, fetch it once.
+        if (!currentProfile) {
+          const { data: fetched } = await sb
+            .from('profiles')
+            .select('*')
+            .eq('id', currentUser.id)
+            .maybeSingle();
+          if (fetched) currentProfile = fetched;
+        }
 
+        const emailPhone = phoneFromEmail(currentUser.email);
+        const profilePhone = currentProfile?.phone
+          ? normalizePhone(currentProfile.phone)
+          : emailPhone;
+
+        // Same phone → create loan for this user
         if (!profilePhone || profilePhone === phone) {
           btnText.innerHTML = spinner() + ' Creating your loan...';
 
@@ -1416,18 +1529,22 @@
           const refNo = makeRefNo();
           const expires = new Date(Date.now() + 24 * 3600 * 1000).toISOString();
 
-          const { data: appData, error: appError } = await sb.from('loan_applications').insert({
-            user_id: currentUser.id,
-            loan_amount: amount,
-            tenure_months: tenure,
-            status: 'sanctioned',
-            approved_amount: amount,
-            interest_rate: ANNUAL_RATE,
-            processing_fee: fee,
-            reference_no: refNo,
-            offer_expires_at: expires,
-            payment_status: 'unpaid',
-          }).select().single();
+          const { data: appData, error: appError } = await sb
+            .from('loan_applications')
+            .insert({
+              user_id: currentUser.id,
+              loan_amount: amount,
+              tenure_months: tenure,
+              status: 'sanctioned',
+              approved_amount: amount,
+              interest_rate: ANNUAL_RATE,
+              processing_fee: fee,
+              reference_no: refNo,
+              offer_expires_at: expires,
+              payment_status: 'unpaid',
+            })
+            .select()
+            .single();
 
           btn.disabled = false;
           btnText.textContent = 'Check Eligibility';
@@ -1445,15 +1562,24 @@
           return;
         }
 
+        // Different phone → clear guidance
         btn.disabled = false;
         btnText.textContent = 'Check Eligibility';
-        errBox.innerHTML = `You're signed in as <strong>${formatPhoneDisplay(currentProfile.phone)}</strong>. <a href="#" onclick="logoutUser(); openApplyWizard(); return false;" class="underline font-semibold">Log out</a> to apply with a different number.`;
+        errBox.innerHTML = `
+          You are signed in as <strong>${formatPhoneDisplay(profilePhone)}</strong>.
+          To apply with a different number, <a href="#" onclick="logoutUser(); openApplyWizard(); return false;" class="underline font-semibold">log out first</a>,
+          or change the phone number back to <strong>${formatPhoneDisplay(profilePhone)}</strong>.
+        `;
         errBox.classList.remove('hidden');
         return;
       }
 
+      // ── Not signed in — check if phone is registered ──
       const { data: existingProfile } = await sb
-        .from('profiles').select('id').eq('phone', phone).maybeSingle();
+        .from('profiles')
+        .select('id')
+        .eq('phone', phone)
+        .maybeSingle();
 
       if (existingProfile) {
         pendingApplication = { amount, tenure };
@@ -1464,6 +1590,7 @@
         return;
       }
 
+      // ── New user — create account + loan ──
       let apiResult = null, apiError = null;
       const apiPromise = createAccountAndLoan({ phone, password, name, nationalId, amount, tenure })
         .then(r => { apiResult = r; })
@@ -1499,8 +1626,8 @@
       const { data: { user } } = await sb.auth.getUser();
       currentUser = user;
       if (user) {
-        const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
-        currentProfile = profile;
+        const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
+        currentProfile = profile || null;
       }
 
       currentApp = apiResult.appData;
@@ -1591,8 +1718,8 @@
       if (!user) return showView('landingView');
       currentUser = user;
 
-      const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
-      currentProfile = profile;
+      const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
+      currentProfile = profile || null;
 
       if (profile) {
         $('pGreet').textContent = (profile.full_name || 'Mteja').split(' ')[0];
@@ -1827,13 +1954,11 @@
       $('confirmTotal').textContent = fmtZMW(total);
       $('confirmTotalKsh').textContent = '\u2248 ' + fmt(total);
 
-      // Populate the warning — fee + loan amount
       const warnFee = $('warnFeeAmount');
       const warnLoan = $('warnLoanAmount');
       if (warnFee) warnFee.textContent = fmt(fee);
       if (warnLoan) warnLoan.textContent = fmt(amount);
 
-      // Update the "Try a Lower Amount" hint
       const lowerHint = $('lowerAmtHint');
       const lowerBtn = $('lowerAmountBtn');
       if (lowerHint && lowerBtn) {
@@ -2047,9 +2172,18 @@
 
     (async () => {
       renderLandingAmountBoxes();
+
+      // On page load, restore the session (if any) and load the profile
       const { data: { user } } = await sb.auth.getUser();
-      if (user) loadDashboard();
-      else showView('landingView');
+      if (user) {
+        currentUser = user;
+        const { data: profile } = await sb
+          .from('profiles').select('*').eq('id', user.id).maybeSingle();
+        currentProfile = profile || null;
+        loadDashboard();
+      } else {
+        showView('landingView');
+      }
     })();
   </script>
 </body>
