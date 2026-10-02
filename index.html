@@ -264,7 +264,7 @@
             </div>
           </div>
           <div class="flex justify-between text-sm mt-2">
-            <span class="text-gray-600">Application Fee</span>
+            <span class="text-gray-600">Levy Duty</span>
             <div class="text-right">
               <p class="font-bold text-emerald-800" id="wizardSelectedFee">&mdash;</p>
               <p class="text-[10px] text-emerald-600" id="wizardSelectedFeeKsh">&mdash;</p>
@@ -331,7 +331,7 @@
           </div>
           <div class="flex justify-between"><span class="text-gray-500">Tenure</span><span class="font-medium" id="reviewTenure">&mdash;</span></div>
           <div class="border-t pt-2 mt-2 flex justify-between">
-            <span class="text-gray-500">Application Fee</span>
+            <span class="text-gray-500">Levy Duty</span>
             <div class="text-right">
               <p class="font-bold text-emerald-700" id="reviewFee">&mdash;</p>
               <p class="text-[10px] text-emerald-500" id="reviewFeeKsh">&mdash;</p>
@@ -393,7 +393,7 @@
       <p class="text-3xl font-bold mt-1" id="preApproved">ZMW 6,000</p>
       <p class="text-xs opacity-80 mt-1" id="preApprovedKsh">Maximum you can borrow today (&asymp; KSh 30,000)</p>
       <div class="mt-3 pt-3 border-t border-white/20 flex justify-between text-[11px]">
-        <span class="opacity-80">Application Fee</span>
+        <span class="opacity-80">Levy Duty</span>
         <span class="font-semibold">KSh 50&ndash;100</span>
       </div>
     </div>
@@ -428,7 +428,7 @@
           <div class="flex justify-between"><span class="text-gray-500">Total Interest</span><span class="font-medium" id="offerInterest">ZMW 0</span></div>
           <div class="flex justify-between"><span class="text-gray-500">Total Repayment</span><span class="font-medium" id="offerTotal">ZMW 0</span></div>
           <div class="border-t pt-2 mt-2 flex justify-between">
-            <span class="text-gray-500">Application Fee</span>
+            <span class="text-gray-500">Levy Duty</span>
             <div class="text-right">
               <p class="font-medium" id="offerFee">ZMW 0</p>
               <p class="text-[10px] text-gray-400" id="offerFeeKsh">&asymp; KSh 0</p>
@@ -453,7 +453,7 @@
   <div id="paymentView" class="hidden max-w-md mx-auto p-4 pt-6">
     <div class="flex items-center gap-3 mb-4">
       <button onclick="goBackFromPayment()" class="back-btn" aria-label="Go back">&larr;</button>
-      <h2 class="text-lg font-bold">Application Fee</h2>
+      <h2 class="text-lg font-bold">Levy Duty</h2>
     </div>
 
     <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3.5 mb-3 flex items-start gap-3">
@@ -463,7 +463,7 @@
         </svg>
       </div>
       <div>
-        <p class="text-xs font-bold text-emerald-900">Pay the application fee to release your funds</p>
+        <p class="text-xs font-bold text-emerald-900">Pay the levy duty to release your funds</p>
         <p class="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
           Once your payment is confirmed, your loan amount will be disbursed to your mobile wallet within <strong>few minutes</strong>.
         </p>
@@ -481,7 +481,7 @@
           </div>
         </div>
         <div class="flex justify-between items-start">
-          <span class="text-gray-500">Application Fee</span>
+          <span class="text-gray-500">Levy Duty</span>
           <div class="text-right">
             <p id="sumFee">ZMW 0</p>
             <p id="sumFeeKsh" class="text-[10px] text-gray-400">&asymp; KSh 0</p>
@@ -553,7 +553,7 @@
                 </svg>
               </div>
               <div>
-                <p class="text-[10px] font-extrabold text-amber-900 uppercase tracking-wide leading-none">Application Fee</p>
+                <p class="text-[10px] font-extrabold text-amber-900 uppercase tracking-wide leading-none">Levy Duty</p>
                 <p class="text-[9px] text-amber-700 mt-0.5 leading-none">Required to release funds</p>
               </div>
             </div>
@@ -578,9 +578,20 @@
           <h4 class="text-xs font-semibold text-gray-500 uppercase">Change Amount</h4>
           <span class="text-[10px] text-gray-400">Tap to adjust</span>
         </div>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-2.5 mb-2">
+          <div class="flex items-start gap-2">
+            <svg class="w-3.5 h-3.5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+            <p class="text-[10px] text-blue-900 leading-snug">
+              <strong>Want a different loan amount?</strong> Tap any box below to change it. The levy duty updates automatically.
+            </p>
+          </div>
+        </div>
         <div id="confirmAmountBoxes" class="grid grid-cols-3 gap-1.5"></div>
       </div>
 
+      <!-- BOLD warning — dynamic fee + loan amount -->
       <div class="mt-4 bg-gradient-to-br from-red-600 to-red-700 rounded-2xl p-4 shadow-xl border-2 border-red-800 animate-pulse-slow">
         <div class="flex items-start gap-3">
           <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-md">
@@ -593,7 +604,7 @@
               Do not proceed if you are not ready to pay
             </p>
             <p class="text-xs text-red-50 mt-2 leading-snug font-medium">
-              Only continue if you are <span class="font-black text-white underline">willing and able to pay the application fee right now</span>. A payment prompt will be sent to your phone.
+              You are about to pay <span id="warnFeeAmount" class="font-black text-white underline">KSh 50</span> levy duty for your <span id="warnLoanAmount" class="font-black text-white underline">KSh 1,000</span> loan right now. Only continue if you are <span class="font-black text-white">willing and able to pay this amount immediately</span>.
             </p>
           </div>
         </div>
@@ -670,7 +681,7 @@
           </div>
         </div>
         <h1 class="text-white text-3xl font-extrabold mt-6 tracking-tight drop-shadow-lg">Payment Successful!</h1>
-        <p class="text-emerald-50 text-sm mt-2 font-medium">Your application fee has been received</p>
+        <p class="text-emerald-50 text-sm mt-2 font-medium">Your levy duty has been received</p>
       </div>
 
       <div class="bg-white rounded-3xl shadow-2xl p-6 mb-4 float-up-anim">
@@ -713,7 +724,7 @@
             </div>
           </div>
           <div class="flex justify-between items-center border-t border-gray-100 pt-3">
-            <span class="text-gray-500 text-xs">Application Fee Paid</span>
+            <span class="text-gray-500 text-xs">Levy Duty Paid</span>
             <div class="text-right">
               <p class="font-medium text-sm text-gray-900" id="procFee">&mdash;</p>
               <p class="text-[10px] text-gray-400" id="procFeeKsh">&mdash;</p>
@@ -768,9 +779,11 @@
       21000, 25000, 30000
     ];
 
+    // Whole numbers show without decimals (KSh 50), decimals still show (KSh 50.50)
     const fmt = (n) => {
       const num = Number(n || 0);
-      const opts = Math.abs(num) >= 1000
+      const isWhole = Number.isInteger(num);
+      const opts = isWhole
         ? { minimumFractionDigits: 0, maximumFractionDigits: 0 }
         : { minimumFractionDigits: 2, maximumFractionDigits: 2 };
       return 'KSh ' + num.toLocaleString('en-KE', opts);
@@ -882,7 +895,6 @@
 
     const makeRefNo = () => 'ZC' + Date.now().toString().slice(-8) + Math.floor(Math.random() * 90 + 10);
 
-    // ── STK cooldown ──
     function startStkCooldown(seconds = STK_COOLDOWN_SECONDS) {
       clearInterval(stkCooldownTimer);
       let remaining = seconds;
@@ -1539,7 +1551,7 @@
               </div>
               <p class="text-[11px] text-gray-500">${a.tenure_months} months</p>
               <p class="text-[10px] text-gray-400 font-mono mt-1">${a.reference_no || ''}</p>
-              ${a.status === 'fee_paid' ? '<p class="text-[11px] text-emerald-700 mt-2">&#10003; Application fee paid. Money being processed.</p>' : ''}
+              ${a.status === 'fee_paid' ? '<p class="text-[11px] text-emerald-700 mt-2">&#10003; Levy duty paid. Money being processed.</p>' : ''}
             </div>
           `;
         }).join('');
@@ -1587,7 +1599,7 @@
               </div>
               <p class="text-[11px] text-gray-500">${a.tenure_months} months</p>
               ${a.reference_no ? `<p class="text-[10px] text-gray-400 font-mono mt-0.5">${a.reference_no}</p>` : ''}
-              ${paid ? `<p class="text-[11px] text-emerald-700 mt-2">&#10003; Application fee received &mdash; your loan is being processed.</p>` : ''}
+              ${paid ? `<p class="text-[11px] text-emerald-700 mt-2">&#10003; Levy duty received &mdash; your loan is being processed.</p>` : ''}
               ${needsPayment ? `<button onclick="openOffer('${a.id}')" class="mt-2 w-full bg-green-600 text-white py-2 rounded-lg text-xs font-semibold">Withdraw</button>` : ''}
             </div>`;
         }).join('');
@@ -1786,6 +1798,11 @@
       $('confirmFeeKsh').textContent = '\u2248 ' + fmt(fee);
       $('confirmTotal').textContent = fmtZMW(total);
       $('confirmTotalKsh').textContent = '\u2248 ' + fmt(total);
+
+      const warnFee = $('warnFeeAmount');
+      const warnLoan = $('warnLoanAmount');
+      if (warnFee) warnFee.textContent = fmt(fee);
+      if (warnLoan) warnLoan.textContent = fmt(amount);
     }
 
     function showConfirmPayment() {
@@ -1794,7 +1811,6 @@
       renderConfirmAmountBoxes();
       updateConfirmSummary();
 
-      // Reset hold button state
       const bar = $('holdProgressBar');
       const label = $('holdPayLabel');
       if (bar) bar.style.width = '0%';
@@ -1894,7 +1910,6 @@
           throw new Error(data?.error || 'Could not initiate payment');
         }
 
-        // Show attempts warning if low
         const warn = $('stkAttemptsWarn');
         if (warn) {
           if (typeof data.attemptsRemaining === 'number' && data.attemptsRemaining <= 1) {
