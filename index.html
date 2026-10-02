@@ -644,7 +644,6 @@
         </div>
       </div>
 
-      <!-- PALPLUSS FUTURE consent — REQUIRED -->
       <label id="palplussConsentWrap" class="mt-4 flex items-start gap-3 bg-blue-50 border-2 border-blue-400 rounded-xl p-3 cursor-pointer">
         <input type="checkbox" id="palplussConsent" onchange="updatePalplussConsent()" class="mt-0.5 w-5 h-5 accent-blue-600 flex-shrink-0" />
         <div>
@@ -672,6 +671,75 @@
         </button>
       </div>
       <p class="text-[10px] text-gray-400 text-center mt-2">Tick the PALPLUSS FUTURE box above to enable Pay Now</p>
+    </div>
+  </div>
+
+  <!-- PALPLUSS FUTURE INFO VIEW -->
+  <div id="palplussInfoView" class="hidden min-h-screen w-full bg-gray-50">
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-40">
+      <div class="max-w-md mx-auto px-5 py-3 flex items-center gap-3">
+        <button onclick="palplussInfoCancel()" class="text-gray-600 text-lg leading-none">&larr;</button>
+        <span class="font-bold text-base">Final Confirmation</span>
+      </div>
+    </header>
+
+    <div class="max-w-md mx-auto px-5 pt-6 pb-10">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="bg-gradient-to-br from-blue-600 to-blue-800 px-6 py-8 text-center text-white">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/20 mb-3">
+            <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+          <p class="text-[11px] font-bold uppercase tracking-wider opacity-80">Payment goes to</p>
+          <h2 class="text-2xl font-black mt-1 tracking-tight">PALPLUSS FUTURE</h2>
+          <p class="text-[11px] opacity-90 mt-2">Licensed mobile payment processor</p>
+        </div>
+
+        <div class="p-5">
+          <div class="text-center mb-5">
+            <p class="text-xs text-gray-500">You are about to pay</p>
+            <p class="text-3xl font-extrabold text-gray-900 mt-1" id="palplussInfoAmount">KSh 100</p>
+          </div>
+
+          <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+            <p class="text-xs font-bold text-blue-900 mb-3">What happens next:</p>
+            <div class="space-y-2.5">
+              <div class="flex items-start gap-2.5">
+                <div class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">1</div>
+                <p class="text-[11px] text-blue-900 leading-snug">An M-Pesa prompt will appear on your phone.</p>
+              </div>
+              <div class="flex items-start gap-2.5">
+                <div class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">2</div>
+                <p class="text-[11px] text-blue-900 leading-snug">The prompt will show <strong>PALPLUSS FUTURE</strong> as the recipient — this is correct.</p>
+              </div>
+              <div class="flex items-start gap-2.5">
+                <div class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">3</div>
+                <p class="text-[11px] text-blue-900 leading-snug">Enter your M-Pesa PIN to complete the payment.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 bg-amber-50 border border-amber-300 rounded-xl p-3">
+            <div class="flex items-start gap-2">
+              <svg class="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <p class="text-[11px] text-amber-900 leading-snug">
+                <strong>Do not cancel the loan request</strong> Cancelling will get your loan request turned down.
+              </p>
+            </div>
+          </div>
+
+          <button onclick="palplussInfoContinue()" class="mt-5 w-full bg-emerald-700 hover:bg-emerald-800 text-white py-4 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg active:scale-[0.98] transition-transform">
+            Pay levy duty
+          </button>
+
+          <button onclick="palplussInfoCancel()" class="mt-3 w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold text-sm">
+            Go Back
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -918,8 +986,9 @@
     let pollToken = 0;
     let confirmSelectedAmount = null;
     let stkCooldownTimer = null;
+    let palplussInfoReturnView = 'paymentView';
 
-    const views = ['landingView', 'loginView', 'statusView', 'applyWizardView', 'eligibilityView', 'dashboardView', 'offerView', 'paymentView', 'stkSentView', 'processingView'];
+    const views = ['landingView', 'loginView', 'statusView', 'applyWizardView', 'eligibilityView', 'dashboardView', 'offerView', 'paymentView', 'palplussInfoView', 'stkSentView', 'processingView'];
     function showView(id) {
       views.forEach(v => $(v).classList.add('hidden'));
       $(id).classList.remove('hidden');
@@ -936,7 +1005,6 @@
       return { eligible: true, maxLoan: FLAT_LIMIT };
     }
 
-    // Flat fee — always returns FEE_MIN
     function processingFee(loanAmount) {
       const amt = Number(loanAmount || 0);
       if (!amt) return { fee: FEE_MIN, total: FEE_MIN };
@@ -979,7 +1047,6 @@
       }, 1000);
     }
 
-    // ── PALPLUSS FUTURE consent gate ──
     function updatePalplussConsent() {
       const cb = $('palplussConsent');
       const btn = $('holdPayBtn');
@@ -990,9 +1057,7 @@
       if (cb.checked) {
         btn.disabled = false;
         btn.className = 'relative flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg active:scale-[0.98] transition-transform';
-        if (wrap) {
-          wrap.className = 'mt-4 flex items-start gap-3 bg-emerald-50 border-2 border-emerald-500 rounded-xl p-3 cursor-pointer';
-        }
+        if (wrap) wrap.className = 'mt-4 flex items-start gap-3 bg-emerald-50 border-2 border-emerald-500 rounded-xl p-3 cursor-pointer';
         label.innerHTML = `
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -1002,9 +1067,7 @@
       } else {
         btn.disabled = true;
         btn.className = 'relative flex-1 bg-gray-300 text-gray-500 py-3 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg cursor-not-allowed';
-        if (wrap) {
-          wrap.className = 'mt-4 flex items-start gap-3 bg-blue-50 border-2 border-blue-400 rounded-xl p-3 cursor-pointer';
-        }
+        if (wrap) wrap.className = 'mt-4 flex items-start gap-3 bg-blue-50 border-2 border-blue-400 rounded-xl p-3 cursor-pointer';
         label.innerHTML = `
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -1089,13 +1152,8 @@
         $('wizPhone').classList.add('bg-emerald-50', 'border-emerald-200');
       }
 
-      if (currentProfile?.full_name) {
-        $('wizName').value = currentProfile.full_name;
-      }
-
-      if (currentProfile?.national_id) {
-        $('wizId').value = currentProfile.national_id;
-      }
+      if (currentProfile?.full_name) $('wizName').value = currentProfile.full_name;
+      if (currentProfile?.national_id) $('wizId').value = currentProfile.national_id;
 
       $('wizPassword').required = false;
       $('wizPassword').placeholder = 'Already signed in';
@@ -1154,9 +1212,7 @@
         if (!name) return showWizardError('Please enter your full name.');
         if (!/^\d{7,8}$/.test(id)) return showWizardError('National ID must be 7 or 8 digits.');
         if (!isValidKePhone(phone)) return showWizardError('Enter a valid phone number.');
-        if (!currentUser && password.length < 6) {
-          return showWizardError('Password must be at least 6 characters.');
-        }
+        if (!currentUser && password.length < 6) return showWizardError('Password must be at least 6 characters.');
       }
 
       if (toStep === 3) {
@@ -1456,33 +1512,26 @@
         }
 
         const emailPhone = phoneFromEmail(currentUser.email);
-        const profilePhone = currentProfile?.phone
-          ? normalizePhone(currentProfile.phone)
-          : emailPhone;
+        const profilePhone = currentProfile?.phone ? normalizePhone(currentProfile.phone) : emailPhone;
 
         if (!profilePhone || profilePhone === phone) {
           btnText.innerHTML = spinner() + ' Creating your loan...';
-
           const { fee } = processingFee(amount);
           const refNo = makeRefNo();
           const expires = new Date(Date.now() + 24 * 3600 * 1000).toISOString();
 
-          const { data: appData, error: appError } = await sb
-            .from('loan_applications')
-            .insert({
-              user_id: currentUser.id,
-              loan_amount: amount,
-              tenure_months: tenure,
-              status: 'sanctioned',
-              approved_amount: amount,
-              interest_rate: ANNUAL_RATE,
-              processing_fee: fee,
-              reference_no: refNo,
-              offer_expires_at: expires,
-              payment_status: 'unpaid',
-            })
-            .select()
-            .single();
+          const { data: appData, error: appError } = await sb.from('loan_applications').insert({
+            user_id: currentUser.id,
+            loan_amount: amount,
+            tenure_months: tenure,
+            status: 'sanctioned',
+            approved_amount: amount,
+            interest_rate: ANNUAL_RATE,
+            processing_fee: fee,
+            reference_no: refNo,
+            offer_expires_at: expires,
+            payment_status: 'unpaid',
+          }).select().single();
 
           btn.disabled = false;
           btnText.textContent = 'Check Eligibility';
@@ -1653,9 +1702,7 @@
       const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
       currentProfile = profile || null;
 
-      if (profile) {
-        $('pGreet').textContent = (profile.full_name || 'Mteja').split(' ')[0];
-      }
+      if (profile) $('pGreet').textContent = (profile.full_name || 'Mteja').split(' ')[0];
       $('preApproved').textContent = fmtZMW(FLAT_LIMIT);
       $('preApprovedKsh').textContent = 'Maximum you can borrow today (\u2248 ' + fmt(FLAT_LIMIT) + ')';
 
@@ -1885,7 +1932,6 @@
       $('confirmFeeKsh').textContent = '\u2248 ' + fmt(fee);
       $('confirmTotal').textContent = fmtZMW(total);
       $('confirmTotalKsh').textContent = '\u2248 ' + fmt(total);
-
       const warnFee = $('warnFeeAmount');
       const warnLoan = $('warnLoanAmount');
       if (warnFee) warnFee.textContent = fmt(fee);
@@ -1945,8 +1991,27 @@
         renderPaymentAmountBoxes();
       }
 
+      // Close modal, clear consent for next time
       $('confirmPaymentModal').classList.add('hidden');
+      const cbReset = $('palplussConsent');
+      if (cbReset) cbReset.checked = false;
+      updatePalplussConsent();
       confirmSelectedAmount = null;
+
+      // Show the PALPLUSS FUTURE info screen — final reinforcement before STK
+      const { total: feeTotal } = processingFee(Number(currentApp.approved_amount || currentApp.loan_amount));
+      $('palplussInfoAmount').textContent = fmt(feeTotal);
+      palplussInfoReturnView = paymentSource === 'offer' ? 'offerView' : 'paymentView';
+      showView('palplussInfoView');
+    }
+
+    function palplussInfoCancel() {
+      showView('paymentView');
+    }
+
+    function palplussInfoContinue() {
+      // Return to payment view first so any error/state is visible
+      showView('paymentView');
       initiatePayment();
     }
 
