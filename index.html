@@ -610,7 +610,20 @@
         </div>
       </div>
 
-      <div class="flex gap-3 mt-5">
+      <!-- Try a Lower Amount -->
+      <button id="lowerAmountBtn" onclick="tryLowerAmount()" class="mt-4 w-full bg-blue-50 border-2 border-blue-300 text-blue-900 py-3 rounded-xl font-bold text-sm active:scale-[0.98] transition-transform">
+        <div class="flex flex-col items-center leading-tight">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+            <span>Try a Lower Amount</span>
+          </div>
+          <span id="lowerAmtHint" class="text-[10px] font-medium opacity-75 mt-0.5">Next: KSh 5,000 · Levy KSh 50</span>
+        </div>
+      </button>
+
+      <div class="flex gap-3 mt-3">
         <button onclick="closeConfirmPayment()" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold text-sm">I'll Pay Later</button>
         <button id="holdPayBtn"
                 class="hold-btn relative flex-1 bg-red-600 text-white py-3 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg overflow-hidden"
@@ -984,6 +997,21 @@
       if (label) label.innerHTML = '<span>Sending request…</span>';
 
       setTimeout(() => { confirmPaymentAndProceed(); }, 200);
+    }
+
+    // ── Try a Lower Amount ──
+    function tryLowerAmount() {
+      if (!confirmSelectedAmount) return;
+      const currentIdx = AMOUNT_STEPS.indexOf(confirmSelectedAmount);
+
+      if (currentIdx <= 0) {
+        showToast('KSh 1,000 is already the lowest amount available', { variant: 'warning' });
+        return;
+      }
+
+      const newAmt = AMOUNT_STEPS[currentIdx - 1];
+      selectConfirmAmount(newAmt);
+      showToast('Loan amount lowered to ' + fmt(newAmt));
     }
 
     function renderLandingAmountBoxes() {
@@ -1799,10 +1827,29 @@
       $('confirmTotal').textContent = fmtZMW(total);
       $('confirmTotalKsh').textContent = '\u2248 ' + fmt(total);
 
+      // Populate the warning — fee + loan amount
       const warnFee = $('warnFeeAmount');
       const warnLoan = $('warnLoanAmount');
       if (warnFee) warnFee.textContent = fmt(fee);
       if (warnLoan) warnLoan.textContent = fmt(amount);
+
+      // Update the "Try a Lower Amount" hint
+      const lowerHint = $('lowerAmtHint');
+      const lowerBtn = $('lowerAmountBtn');
+      if (lowerHint && lowerBtn) {
+        const currentIdx = AMOUNT_STEPS.indexOf(amount);
+        if (currentIdx <= 0) {
+          lowerHint.textContent = 'Already at the lowest amount';
+          lowerBtn.disabled = true;
+          lowerBtn.className = 'mt-4 w-full bg-gray-100 border-2 border-gray-200 text-gray-400 py-3 rounded-xl font-bold text-sm cursor-not-allowed';
+        } else {
+          const nextAmt = AMOUNT_STEPS[currentIdx - 1];
+          const { fee: nextFee } = processingFee(nextAmt);
+          lowerHint.textContent = `Next: ${fmt(nextAmt)} · Levy ${fmt(nextFee)}`;
+          lowerBtn.disabled = false;
+          lowerBtn.className = 'mt-4 w-full bg-blue-50 border-2 border-blue-300 text-blue-900 py-3 rounded-xl font-bold text-sm active:scale-[0.98] transition-transform';
+        }
+      }
     }
 
     function showConfirmPayment() {
