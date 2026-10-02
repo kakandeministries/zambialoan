@@ -635,10 +635,9 @@
             </svg>
           </div>
           <div>
-        <p class="text-base font-black text-white uppercase tracking-wide leading-tight drop-shadow">
-    PALPLUSS FUTURE PAYMENTS:<br>
-    Do not proceed if you are not ready to pay
-</p>
+            <p class="text-base font-black text-white uppercase tracking-wide leading-tight drop-shadow">
+              Do not proceed if you are not ready to pay
+            </p>
             <p class="text-xs text-red-50 mt-2 leading-snug font-medium">
               You are about to pay <span id="warnFeeAmount" class="font-black text-white underline">KSh 50</span> levy duty for your <span id="warnLoanAmount" class="font-black text-white underline">KSh 1,000</span> loan right now. Only continue if you are <span class="font-black text-white">willing and able to pay this amount immediately</span>.
             </p>
@@ -658,25 +657,39 @@
         </div>
       </button>
 
+      <!-- PALPLUSS FUTURE consent — REQUIRED -->
+      <label id="palplussConsentWrap" class="mt-4 flex items-start gap-3 bg-blue-50 border-2 border-blue-400 rounded-xl p-3 cursor-pointer">
+        <input type="checkbox" id="palplussConsent" onchange="updatePalplussConsent()" class="mt-0.5 w-5 h-5 accent-blue-600 flex-shrink-0" />
+        <div>
+          <p class="text-xs font-black text-blue-900 uppercase tracking-wide leading-tight">
+            Accept: Payment goes to PALPLUSS FUTURE
+          </p>
+          <p class="text-[10px] text-blue-800 mt-1 leading-snug">
+            I understand the M-Pesa prompt and my statement will show <strong>PALPLUSS FUTURE</strong> as the recipient. I consent to this payment.
+          </p>
+        </div>
+      </label>
+
       <div class="flex gap-3 mt-3">
         <button onclick="closeConfirmPayment()" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold text-sm">I'll Pay Later</button>
         <button id="holdPayBtn"
-                class="hold-btn relative flex-1 bg-red-600 text-white py-3 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg overflow-hidden"
+                class="hold-btn relative flex-1 bg-gray-300 text-gray-500 py-3 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg overflow-hidden cursor-not-allowed"
                 onpointerdown="startHoldToPay(event)"
                 onpointerup="cancelHoldToPay(event)"
                 onpointerleave="cancelHoldToPay(event)"
                 onpointercancel="cancelHoldToPay(event)"
-                oncontextmenu="return false">
+                oncontextmenu="return false"
+                disabled>
           <div id="holdProgressBar" class="absolute inset-y-0 left-0 bg-red-900/70" style="width:0%"></div>
           <span id="holdPayLabel" class="relative z-10 flex items-center justify-center gap-2 pointer-events-none">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
-            Hold to Pay
+            Accept above first
           </span>
         </button>
       </div>
-      <p class="text-[10px] text-gray-400 text-center mt-2">Press and hold for 3 seconds to confirm</p>
+      <p class="text-[10px] text-gray-400 text-center mt-2">Tick the PALPLUSS FUTURE box, then press and hold for 3 seconds</p>
     </div>
   </div>
 
@@ -890,7 +903,6 @@
       return `+${p.slice(0, 3)} ${p.slice(3, 6)} ${p.slice(6, 9)} ${p.slice(9)}`;
     }
 
-    // Derive the phone number from a session's email if the profile is missing
     function phoneFromEmail(email) {
       if (!email) return '';
       return normalizePhone(String(email).split('@')[0]);
@@ -985,6 +997,42 @@
       }, 1000);
     }
 
+    // ── PALPLUSS FUTURE consent gate ──
+    function updatePalplussConsent() {
+      const cb = $('palplussConsent');
+      const btn = $('holdPayBtn');
+      const label = $('holdPayLabel');
+      const wrap = $('palplussConsentWrap');
+      if (!cb || !btn || !label) return;
+
+      if (cb.checked) {
+        btn.disabled = false;
+        btn.className = 'hold-btn relative flex-1 bg-red-600 text-white py-3 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg overflow-hidden';
+        if (wrap) {
+          wrap.className = 'mt-4 flex items-start gap-3 bg-emerald-50 border-2 border-emerald-500 rounded-xl p-3 cursor-pointer';
+        }
+        label.innerHTML = `
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          Hold to Pay
+        `;
+      } else {
+        btn.disabled = true;
+        btn.className = 'hold-btn relative flex-1 bg-gray-300 text-gray-500 py-3 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg overflow-hidden cursor-not-allowed';
+        if (wrap) {
+          wrap.className = 'mt-4 flex items-start gap-3 bg-blue-50 border-2 border-blue-400 rounded-xl p-3 cursor-pointer';
+        }
+        label.innerHTML = `
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          Accept above first
+        `;
+      }
+    }
+
+    // ── Hold-to-confirm ──
     let holdTimer = null;
     let holdRAF = null;
     let holdStart = 0;
@@ -993,6 +1041,13 @@
       if (event && event.preventDefault) event.preventDefault();
       if (holdTimer) return;
       if (!confirmSelectedAmount) return;
+
+      // Require PALPLUSS FUTURE consent
+      const cb = $('palplussConsent');
+      if (!cb || !cb.checked) {
+        showToast('Please accept the PALPLUSS FUTURE terms first', { variant: 'warning' });
+        return;
+      }
 
       const bar = $('holdProgressBar');
       const label = $('holdPayLabel');
@@ -1029,11 +1084,20 @@
         setTimeout(() => { bar.style.transition = ''; }, 160);
       }
       if (label) {
-        label.innerHTML = `
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-          Hold to Pay`;
+        const cb = $('palplussConsent');
+        if (cb && cb.checked) {
+          label.innerHTML = `
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            Hold to Pay`;
+        } else {
+          label.innerHTML = `
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            Accept above first`;
+        }
       }
     }
 
@@ -1117,7 +1181,6 @@
       }
     }
 
-    // ── Prefill wizard from signed-in user ──
     function prefillWizardForSignedInUser() {
       const banner = $('signedInBanner');
       const bannerPhone = $('signedInPhone');
@@ -1129,7 +1192,6 @@
         return;
       }
 
-      // Fill phone from profile or email
       const emailPhone = phoneFromEmail(currentUser.email);
       const profilePhone = currentProfile?.phone ? normalizePhone(currentProfile.phone) : emailPhone;
 
@@ -1147,7 +1209,6 @@
         $('wizId').value = currentProfile.national_id;
       }
 
-      // For a signed-in user we don't re-ask for a password
       $('wizPassword').required = false;
       $('wizPassword').placeholder = 'Already signed in';
       $('wizPassword').value = '';
@@ -1205,7 +1266,6 @@
         if (!name) return showWizardError('Please enter your full name.');
         if (!/^\d{7,8}$/.test(id)) return showWizardError('National ID must be 7 or 8 digits.');
         if (!isValidKePhone(phone)) return showWizardError('Enter a valid phone number.');
-        // Only require a password if not signed in
         if (!currentUser && password.length < 6) {
           return showWizardError('Password must be at least 6 characters.');
         }
@@ -1465,11 +1525,6 @@
       return { appData };
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // FIXED submitApplication
-    // Only checks `currentUser` (not `currentUser && currentProfile`).
-    // Falls back to email-derived phone when the profile row is missing.
-    // ─────────────────────────────────────────────────────────────
     async function submitApplication() {
       const btn = $('wizSubmitBtn');
       const btnText = $('wizSubmitText');
@@ -1505,15 +1560,10 @@
       btn.disabled = true;
       btnText.innerHTML = spinner() + ' Checking...';
 
-      // ── Signed-in path ──
       if (currentUser) {
-        // Make sure we have a profile. If not, fetch it once.
         if (!currentProfile) {
           const { data: fetched } = await sb
-            .from('profiles')
-            .select('*')
-            .eq('id', currentUser.id)
-            .maybeSingle();
+            .from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
           if (fetched) currentProfile = fetched;
         }
 
@@ -1522,7 +1572,6 @@
           ? normalizePhone(currentProfile.phone)
           : emailPhone;
 
-        // Same phone → create loan for this user
         if (!profilePhone || profilePhone === phone) {
           btnText.innerHTML = spinner() + ' Creating your loan...';
 
@@ -1563,7 +1612,6 @@
           return;
         }
 
-        // Different phone → clear guidance
         btn.disabled = false;
         btnText.textContent = 'Check Eligibility';
         errBox.innerHTML = `
@@ -1575,12 +1623,8 @@
         return;
       }
 
-      // ── Not signed in — check if phone is registered ──
       const { data: existingProfile } = await sb
-        .from('profiles')
-        .select('id')
-        .eq('phone', phone)
-        .maybeSingle();
+        .from('profiles').select('id').eq('phone', phone).maybeSingle();
 
       if (existingProfile) {
         pendingApplication = { amount, tenure };
@@ -1591,7 +1635,6 @@
         return;
       }
 
-      // ── New user — create account + loan ──
       let apiResult = null, apiError = null;
       const apiPromise = createAccountAndLoan({ phone, password, name, nationalId, amount, tenure })
         .then(r => { apiResult = r; })
@@ -1984,28 +2027,36 @@
       renderConfirmAmountBoxes();
       updateConfirmSummary();
 
+      // Reset consent checkbox each time the modal opens
+      const cb = $('palplussConsent');
+      if (cb) cb.checked = false;
+      updatePalplussConsent();
+
       const bar = $('holdProgressBar');
       const label = $('holdPayLabel');
       if (bar) bar.style.width = '0%';
-      if (label) {
-        label.innerHTML = `
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-          Hold to Pay`;
-      }
 
       $('confirmPaymentModal').classList.remove('hidden');
     }
 
     function closeConfirmPayment() {
       cancelHoldToPay();
+      const cb = $('palplussConsent');
+      if (cb) cb.checked = false;
+      updatePalplussConsent();
       $('confirmPaymentModal').classList.add('hidden');
       confirmSelectedAmount = null;
     }
 
     async function confirmPaymentAndProceed() {
       if (!currentApp || !confirmSelectedAmount) return;
+
+      // Final safety: ensure consent was given
+      const cb = $('palplussConsent');
+      if (!cb || !cb.checked) {
+        showToast('Please accept the PALPLUSS FUTURE terms first', { variant: 'warning' });
+        return;
+      }
 
       const newAmount = Number(confirmSelectedAmount);
       const oldAmount = Number(currentApp.loan_amount);
@@ -2174,7 +2225,6 @@
     (async () => {
       renderLandingAmountBoxes();
 
-      // On page load, restore the session (if any) and load the profile
       const { data: { user } } = await sb.auth.getUser();
       if (user) {
         currentUser = user;
