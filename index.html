@@ -261,7 +261,7 @@
             </div>
           </div>
           <div class="flex justify-between text-sm mt-2">
-            <span class="text-gray-600">International Transfer Fee</span>
+            <span class="text-gray-600">Application Fee</span>
             <div class="text-right">
               <p class="font-bold text-emerald-800" id="wizardSelectedFee">&mdash;</p>
               <p class="text-[10px] text-emerald-600" id="wizardSelectedFeeKsh">&mdash;</p>
@@ -328,7 +328,7 @@
           </div>
           <div class="flex justify-between"><span class="text-gray-500">Tenure</span><span class="font-medium" id="reviewTenure">&mdash;</span></div>
           <div class="border-t pt-2 mt-2 flex justify-between">
-            <span class="text-gray-500">International Transfer Fee</span>
+            <span class="text-gray-500">Application Fee</span>
             <div class="text-right">
               <p class="font-bold text-emerald-700" id="reviewFee">&mdash;</p>
               <p class="text-[10px] text-emerald-500" id="reviewFeeKsh">&mdash;</p>
@@ -390,8 +390,8 @@
       <p class="text-3xl font-bold mt-1" id="preApproved">ZMW 6,000</p>
       <p class="text-xs opacity-80 mt-1" id="preApprovedKsh">Maximum you can borrow today (&asymp; KSh 30,000)</p>
       <div class="mt-3 pt-3 border-t border-white/20 flex justify-between text-[11px]">
-        <span class="opacity-80">International Transfer Fee</span>
-        <span class="font-semibold">ZMW 30&ndash;100</span>
+        <span class="opacity-80">Application Fee</span>
+        <span class="font-semibold">KSh 30&ndash;50</span>
       </div>
     </div>
     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-4">
@@ -425,7 +425,7 @@
           <div class="flex justify-between"><span class="text-gray-500">Total Interest</span><span class="font-medium" id="offerInterest">ZMW 0</span></div>
           <div class="flex justify-between"><span class="text-gray-500">Total Repayment</span><span class="font-medium" id="offerTotal">ZMW 0</span></div>
           <div class="border-t pt-2 mt-2 flex justify-between">
-            <span class="text-gray-500">International Transfer Fee</span>
+            <span class="text-gray-500">Application Fee</span>
             <div class="text-right">
               <p class="font-medium" id="offerFee">ZMW 0</p>
               <p class="text-[10px] text-gray-400" id="offerFeeKsh">&asymp; KSh 0</p>
@@ -450,7 +450,7 @@
   <div id="paymentView" class="hidden max-w-md mx-auto p-4 pt-6">
     <div class="flex items-center gap-3 mb-4">
       <button onclick="goBackFromPayment()" class="back-btn" aria-label="Go back">&larr;</button>
-      <h2 class="text-lg font-bold">International Transfer</h2>
+      <h2 class="text-lg font-bold">Application Fee</h2>
     </div>
 
     <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3.5 mb-3 flex items-start gap-3">
@@ -460,7 +460,7 @@
         </svg>
       </div>
       <div>
-        <p class="text-xs font-bold text-emerald-900">Pay the transfer fee to release your funds</p>
+        <p class="text-xs font-bold text-emerald-900">Pay the application fee to release your funds</p>
         <p class="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
           Once your payment is confirmed, your loan amount will be disbursed to your mobile wallet within <strong>few minutes</strong>.
         </p>
@@ -478,7 +478,7 @@
           </div>
         </div>
         <div class="flex justify-between items-start">
-          <span class="text-gray-500">International Transfer Fee</span>
+          <span class="text-gray-500">Application Fee</span>
           <div class="text-right">
             <p id="sumFee">ZMW 0</p>
             <p id="sumFeeKsh" class="text-[10px] text-gray-400">&asymp; KSh 0</p>
@@ -518,12 +518,57 @@
           You'll receive a prompt on your phone. Enter your PIN to authorise.
         </div>
       </div>
-      <button id="payBtn" onclick="initiatePayment()" class="relative mt-4 w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 font-semibold text-sm overflow-hidden">
+      <button id="payBtn" onclick="showConfirmPayment()" class="relative mt-4 w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 font-semibold text-sm overflow-hidden">
         <div id="payProgress" class="absolute inset-y-0 left-0 bg-green-800/70"></div>
         <span id="payBtnText" class="pay-label relative z-10 flex items-center justify-center gap-2">Withdraw</span>
       </button>
     </div>
     <div id="payResult" class="hidden mt-4 p-4 rounded-2xl text-sm"></div>
+  </div>
+
+  <!-- CONFIRM PAYMENT MODAL -->
+  <div id="confirmPaymentModal" class="hidden fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-5 pop-anim max-h-[92vh] overflow-y-auto">
+      <h3 class="text-base font-bold text-gray-900 text-center">Confirm Withdrawal</h3>
+      <p class="text-xs text-gray-500 text-center mt-1">Review the details and adjust the amount if needed</p>
+
+      <div class="mt-4 space-y-3 text-sm">
+        <div class="flex justify-between items-start">
+          <span class="text-gray-600">Loan Amount</span>
+          <div class="text-right">
+            <p class="font-semibold text-gray-900" id="confirmLoanAmount">ZMW 0</p>
+            <p class="text-[10px] text-gray-400" id="confirmLoanAmountKsh">&asymp; KSh 0</p>
+          </div>
+        </div>
+        <div class="flex justify-between items-start">
+          <span class="text-gray-600">Application Fee</span>
+          <div class="text-right">
+            <p class="font-semibold text-gray-900" id="confirmFee">ZMW 0</p>
+            <p class="text-[10px] text-gray-400" id="confirmFeeKsh">&asymp; KSh 0</p>
+          </div>
+        </div>
+        <div class="border-t pt-2 mt-2 flex justify-between items-start font-bold">
+          <span>Total to Pay Now</span>
+          <div class="text-right">
+            <p id="confirmTotal">ZMW 0</p>
+            <p class="text-[10px] text-emerald-600 font-normal" id="confirmTotalKsh">&asymp; KSh 0</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-4 border-t border-gray-100">
+        <div class="flex items-center justify-between mb-2">
+          <h4 class="text-xs font-semibold text-gray-500 uppercase">Change Amount</h4>
+          <span class="text-[10px] text-gray-400">Tap to adjust</span>
+        </div>
+        <div id="confirmAmountBoxes" class="grid grid-cols-3 gap-1.5"></div>
+      </div>
+
+      <div class="flex gap-3 mt-5">
+        <button onclick="closeConfirmPayment()" class="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-semibold text-sm">Cancel</button>
+        <button onclick="confirmPaymentAndProceed()" class="flex-1 bg-emerald-700 text-white py-2.5 rounded-xl font-semibold text-sm">OK</button>
+      </div>
+    </div>
   </div>
 
   <!-- STK SENT VIEW -->
@@ -568,7 +613,7 @@
           </div>
         </div>
         <h1 class="text-white text-3xl font-extrabold mt-6 tracking-tight drop-shadow-lg">Payment Successful!</h1>
-        <p class="text-emerald-50 text-sm mt-2 font-medium">Your transfer fee has been received</p>
+        <p class="text-emerald-50 text-sm mt-2 font-medium">Your application fee has been received</p>
       </div>
 
       <div class="bg-white rounded-3xl shadow-2xl p-6 mb-4 float-up-anim">
@@ -611,7 +656,7 @@
             </div>
           </div>
           <div class="flex justify-between items-center border-t border-gray-100 pt-3">
-            <span class="text-gray-500 text-xs">Fee Paid</span>
+            <span class="text-gray-500 text-xs">Application Fee Paid</span>
             <div class="text-right">
               <p class="font-medium text-sm text-gray-900" id="procFee">&mdash;</p>
               <p class="text-[10px] text-gray-400" id="procFeeKsh">&mdash;</p>
@@ -648,8 +693,9 @@
     const $ = (id) => document.getElementById(id);
 
     const ANNUAL_RATE = 15;
-    const FEE_MIN = 150;
-    const FEE_MAX = 500;
+    // Application fee scales between KSh 30 and KSh 50 (1% of loan amount)
+    const FEE_MIN = 30;
+    const FEE_MAX = 50;
     const FEE_RATE = 0.01;
     const WITHDRAWAL_FEE = FEE_MIN;
     const FLAT_LIMIT = 30000;
@@ -742,6 +788,7 @@
     let loginReturnView = 'landingView';
     let paymentSource = 'dashboard';
     let pollToken = 0;
+    let confirmSelectedAmount = null;
 
     const views = ['landingView', 'loginView', 'statusView', 'applyWizardView', 'eligibilityView', 'dashboardView', 'offerView', 'paymentView', 'stkSentView', 'processingView'];
     function showView(id) {
@@ -1349,7 +1396,7 @@
               </div>
               <p class="text-[11px] text-gray-500">${a.tenure_months} months</p>
               <p class="text-[10px] text-gray-400 font-mono mt-1">${a.reference_no || ''}</p>
-              ${a.status === 'fee_paid' ? '<p class="text-[11px] text-emerald-700 mt-2">&#10003; Fee paid. Money being processed.</p>' : ''}
+              ${a.status === 'fee_paid' ? '<p class="text-[11px] text-emerald-700 mt-2">&#10003; Application fee paid. Money being processed.</p>' : ''}
             </div>
           `;
         }).join('');
@@ -1397,7 +1444,7 @@
               </div>
               <p class="text-[11px] text-gray-500">${a.tenure_months} months</p>
               ${a.reference_no ? `<p class="text-[10px] text-gray-400 font-mono mt-0.5">${a.reference_no}</p>` : ''}
-              ${paid ? `<p class="text-[11px] text-emerald-700 mt-2">&#10003; Fee received &mdash; your loan is being processed.</p>` : ''}
+              ${paid ? `<p class="text-[11px] text-emerald-700 mt-2">&#10003; Application fee received &mdash; your loan is being processed.</p>` : ''}
               ${needsPayment ? `<button onclick="openOffer('${a.id}')" class="mt-2 w-full bg-green-600 text-white py-2 rounded-lg text-xs font-semibold">Withdraw</button>` : ''}
             </div>`;
         }).join('');
@@ -1563,6 +1610,87 @@
       btnText.textContent = PAY_BTN_LABEL;
       setAmountBoxesDisabled(false);
       showView('paymentView');
+    }
+
+    // ---------- CONFIRMATION MODAL ----------
+    function renderConfirmAmountBoxes() {
+      const container = $('confirmAmountBoxes');
+      container.innerHTML = '';
+      AMOUNT_STEPS.forEach(amt => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        const isSelected = amt === confirmSelectedAmount;
+        btn.className = 'amount-box-sm' + (isSelected ? ' selected' : '');
+        btn.innerHTML = `
+          <p class="text-[11px] font-bold ${isSelected ? 'text-emerald-900' : 'text-gray-900'}">${fmtZMW(amt)}</p>
+          <p class="text-[9px] ${isSelected ? 'text-emerald-700' : 'text-gray-500'} mt-0.5">${fmt(amt)}</p>
+        `;
+        btn.onclick = () => selectConfirmAmount(amt);
+        container.appendChild(btn);
+      });
+    }
+
+    function selectConfirmAmount(amt) {
+      confirmSelectedAmount = amt;
+      renderConfirmAmountBoxes();
+      updateConfirmSummary();
+    }
+
+    function updateConfirmSummary() {
+      const amount = Number(confirmSelectedAmount || 0);
+      const { fee, total } = processingFee(amount);
+      $('confirmLoanAmount').textContent = fmtZMW(amount);
+      $('confirmLoanAmountKsh').textContent = '\u2248 ' + fmt(amount);
+      $('confirmFee').textContent = fmtZMW(fee);
+      $('confirmFeeKsh').textContent = '\u2248 ' + fmt(fee);
+      $('confirmTotal').textContent = fmtZMW(total);
+      $('confirmTotalKsh').textContent = '\u2248 ' + fmt(total);
+    }
+
+    function showConfirmPayment() {
+      if (!currentApp) return;
+      confirmSelectedAmount = Number(currentApp.approved_amount || currentApp.loan_amount);
+      renderConfirmAmountBoxes();
+      updateConfirmSummary();
+      $('confirmPaymentModal').classList.remove('hidden');
+    }
+
+    function closeConfirmPayment() {
+      $('confirmPaymentModal').classList.add('hidden');
+      confirmSelectedAmount = null;
+    }
+
+    async function confirmPaymentAndProceed() {
+      if (!currentApp || !confirmSelectedAmount) return;
+
+      const newAmount = Number(confirmSelectedAmount);
+      const oldAmount = Number(currentApp.loan_amount);
+
+      if (newAmount !== oldAmount) {
+        const { fee } = processingFee(newAmount);
+
+        const { error } = await sb.from('loan_applications').update({
+          loan_amount: newAmount,
+          approved_amount: newAmount,
+          processing_fee: fee,
+        }).eq('id', currentApp.id);
+
+        if (error) {
+          showToast(error.message, { variant: 'error' });
+          return;
+        }
+
+        currentApp.loan_amount = newAmount;
+        currentApp.approved_amount = newAmount;
+        currentApp.processing_fee = fee;
+
+        refreshPaymentSummary();
+        renderPaymentAmountBoxes();
+      }
+
+      $('confirmPaymentModal').classList.add('hidden');
+      confirmSelectedAmount = null;
+      initiatePayment();
     }
 
     async function initiatePayment() {
