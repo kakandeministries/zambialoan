@@ -80,7 +80,7 @@
     .dot-live{animation:dot-live 1.4s ease-in-out infinite}
     @keyframes counter-bump{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
     .counter-bump{animation:counter-bump 0.5s ease-out}
-    @keyframes slide-down{from{max-height:0;opacity:0}to{max-height:600px;opacity:1}}
+    @keyframes slide-down{from{max-height:0;opacity:0}to{max-height:400px;opacity:1}}
     .slide-down{animation:slide-down 0.3s cubic-bezier(0.34,1.56,0.64,1);overflow:hidden}
   </style>
 </head>
@@ -702,6 +702,25 @@
         <div id="confirmAmountBoxes" class="grid grid-cols-3 gap-1.5"></div>
       </div>
 
+      <!-- PALPLUSS FUTURE DOUBLE-CONFIRM CARD -->
+      <div id="palplussConsentWrap" class="mt-4 bg-blue-50 border-2 border-blue-400 rounded-xl p-3 transition-colors">
+        <label class="flex items-start gap-3 cursor-pointer">
+          <input type="checkbox" id="palplussConsent" onchange="onPalplussCheckboxChange()" class="mt-0.5 w-5 h-5 accent-blue-600 flex-shrink-0" />
+          <div>
+            <p class="text-[10px] font-extrabold text-blue-900 uppercase tracking-wider leading-none">Step 1 of 2</p>
+            <p class="text-xs font-black text-blue-900 mt-1 leading-tight">
+              Payment goes to PALPLUSS FUTURE
+            </p>
+            <p class="text-[10px] text-blue-800 mt-1 leading-snug">
+              I understand the M-Pesa prompt and my statement will show <strong>PALPLUSS FUTURE</strong> as the recipient.
+            </p>
+          </div>
+        </label>
+        <button id="palplussConsentConfirmBtn" onclick="confirmPalplussConsent()" disabled class="mt-3 w-full bg-gray-200 text-gray-500 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wide cursor-not-allowed transition-colors">
+          Step 2: Tap to Confirm
+        </button>
+      </div>
+
       <!-- LIVE PAYOUTS TICKER -->
       <div class="mt-3 bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-3 shadow-sm">
         <div class="flex items-center justify-between mb-2">
@@ -725,13 +744,14 @@
       <div class="flex gap-3 mt-3">
         <button onclick="closeConfirmPayment()" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold text-sm">I'll Pay Later</button>
         <button id="holdPayBtn"
-                class="relative flex-1 bg-red-600 text-white py-3 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg active:scale-[0.98] transition-transform"
-                onclick="onMainPayBtnTap()">
+                class="relative flex-1 bg-gray-300 text-gray-500 py-3 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg cursor-not-allowed"
+                onclick="onMainPayBtnTap()"
+                disabled>
           <span id="holdPayLabel" class="relative z-10 flex items-center justify-center gap-2 pointer-events-none">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
-            Tap to Pay
+            Complete both steps
           </span>
         </button>
       </div>
@@ -756,24 +776,6 @@
           <div class="bg-white rounded-xl p-3 border border-red-200">
             <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Type this amount below</p>
             <p class="text-2xl font-extrabold text-gray-900 mt-1 font-mono" id="amountConfirmTarget">100</p>
-          </div>
-
-          <!-- PALPLUSS FUTURE INFO -->
-          <div class="mt-3 bg-blue-50 border-2 border-blue-400 rounded-xl p-3">
-            <div class="flex items-start gap-2.5">
-              <div class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <div>
-                <p class="text-[10px] font-extrabold text-blue-900 uppercase tracking-wider leading-none">Payment goes to</p>
-                <p class="text-sm font-black text-blue-900 mt-1 leading-tight">PALPLUSS FUTURE</p>
-                <p class="text-[10px] text-blue-800 mt-1 leading-snug">
-                  The M-Pesa prompt and your statement will show <strong>PALPLUSS FUTURE</strong> as the recipient — not ZamCash.
-                </p>
-              </div>
-            </div>
           </div>
 
           <div class="mt-3">
@@ -1069,6 +1071,7 @@
     let pollToken = 0;
     let confirmSelectedAmount = null;
     let stkCooldownTimer = null;
+    let palplussConsentConfirmed = false;
     let amountConfirmRevealed = false;
 
     const views = ['landingView', 'loginView', 'statusView', 'applyWizardView', 'eligibilityView', 'dashboardView', 'offerView', 'paymentView', 'stkSentView', 'processingView'];
@@ -1190,23 +1193,87 @@
       tickerTimer = null;
     }
 
-    // ── AMOUNT CONFIRMATION ──
-    function restoreMainPayBtn() {
-      const btn = $('holdPayBtn');
-      const label = $('holdPayLabel');
-      if (!btn || !label) return;
-      btn.disabled = false;
-      btn.className = 'relative flex-1 bg-red-600 text-white py-3 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg active:scale-[0.98] transition-transform';
-      label.innerHTML = `
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-        </svg>
-        Tap to Pay
-      `;
+    // ── PALPLUSS FUTURE double-check consent ──
+    function onPalplussCheckboxChange() {
+      const cb = $('palplussConsent');
+      const confirmBtn = $('palplussConsentConfirmBtn');
+      if (!cb || !confirmBtn) return;
+
+      if (!cb.checked) {
+        palplussConsentConfirmed = false;
+        confirmBtn.disabled = true;
+        confirmBtn.className = 'mt-3 w-full bg-gray-200 text-gray-500 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wide cursor-not-allowed transition-colors';
+        confirmBtn.textContent = 'Step 2: Tap to Confirm';
+        updatePalplussConsent();
+        return;
+      }
+
+      confirmBtn.disabled = false;
+      confirmBtn.className = 'mt-3 w-full bg-amber-500 hover:bg-amber-600 text-white py-2.5 rounded-lg font-bold text-xs uppercase tracking-wide active:scale-[0.98] transition-all';
+      confirmBtn.textContent = 'Step 2: Tap to Confirm';
+      updatePalplussConsent();
     }
 
-    function resetAmountConfirmation() {
+    function confirmPalplussConsent() {
+      const cb = $('palplussConsent');
+      const confirmBtn = $('palplussConsentConfirmBtn');
+      if (!cb || !cb.checked || !confirmBtn) return;
+
+      palplussConsentConfirmed = true;
+      confirmBtn.disabled = true;
+      confirmBtn.className = 'mt-3 w-full bg-emerald-600 text-white py-2.5 rounded-lg font-bold text-xs uppercase tracking-wide cursor-default';
+      confirmBtn.innerHTML = '&#10003; Confirmed &mdash; PALPLUSS FUTURE';
+
+      updatePalplussConsent();
+      showToast('PALPLUSS FUTURE confirmed. You can now proceed.');
+    }
+
+    function updatePalplussConsent() {
+      const btn = $('holdPayBtn');
+      const label = $('holdPayLabel');
+      const wrap = $('palplussConsentWrap');
+      if (!btn || !label) return;
+
+      if (palplussConsentConfirmed) {
+        btn.disabled = false;
+        btn.className = 'relative flex-1 bg-red-600 text-white py-3 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg active:scale-[0.98] transition-transform';
+        if (wrap) wrap.className = 'mt-4 bg-emerald-50 border-2 border-emerald-500 rounded-xl p-3 transition-colors';
+        label.innerHTML = `
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+          </svg>
+          Tap to Pay KSh 100
+        `;
+      } else {
+        btn.disabled = true;
+        btn.className = 'relative flex-1 bg-gray-300 text-gray-500 py-3 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg cursor-not-allowed';
+        if (wrap) {
+          const cb = $('palplussConsent');
+          wrap.className = (cb && cb.checked)
+            ? 'mt-4 bg-amber-50 border-2 border-amber-400 rounded-xl p-3 transition-colors'
+            : 'mt-4 bg-blue-50 border-2 border-blue-400 rounded-xl p-3 transition-colors';
+        }
+        label.innerHTML = `
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          Complete both steps
+        `;
+      }
+    }
+
+    function resetPalplussConsent() {
+      palplussConsentConfirmed = false;
       amountConfirmRevealed = false;
+      const cb = $('palplussConsent');
+      const confirmBtn = $('palplussConsentConfirmBtn');
+      if (cb) cb.checked = false;
+      if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.className = 'mt-3 w-full bg-gray-200 text-gray-500 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wide cursor-not-allowed transition-colors';
+        confirmBtn.textContent = 'Step 2: Tap to Confirm';
+      }
+      // Hide amount confirm section
       const section = $('amountConfirmSection');
       if (section) section.classList.add('hidden');
       const input = $('amountConfirmInput');
@@ -1218,11 +1285,16 @@
         submitBtn.disabled = true;
         submitBtn.className = 'flex-[2] bg-gray-300 text-gray-500 py-3 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg cursor-not-allowed';
       }
-      restoreMainPayBtn();
+      updatePalplussConsent();
     }
 
+    // ── AMOUNT CONFIRMATION (replaces hold-to-pay) ──
     function onMainPayBtnTap() {
       if (!confirmSelectedAmount) return;
+      if (!palplussConsentConfirmed) {
+        showToast('Please complete both PALPLUSS FUTURE steps first', { variant: 'warning' });
+        return;
+      }
 
       // Reveal the amount confirmation section
       amountConfirmRevealed = true;
@@ -1238,11 +1310,11 @@
         section.classList.add('slide-down');
       }
 
-      // Lock the main button while confirming
+      // Hide the main action button row so the input is the focus
       const mainRow = $('holdPayBtn');
       if (mainRow) mainRow.disabled = true;
       const mainLabel = $('holdPayLabel');
-      if (mainLabel) mainLabel.innerHTML = '<span>Confirm below&hellip;</span>';
+      if (mainLabel) mainLabel.innerHTML = '<span>Confirm below…</span>';
 
       // Focus the input
       setTimeout(() => {
@@ -1278,7 +1350,21 @@
     }
 
     function cancelAmountConfirm() {
-      resetAmountConfirmation();
+      amountConfirmRevealed = false;
+      const section = $('amountConfirmSection');
+      if (section) section.classList.add('hidden');
+      const input = $('amountConfirmInput');
+      if (input) input.value = '';
+      const err = $('amountConfirmError');
+      if (err) err.classList.add('hidden');
+      const submitBtn = $('amountConfirmSubmitBtn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.className = 'flex-[2] bg-gray-300 text-gray-500 py-3 rounded-xl font-black text-sm uppercase tracking-wide shadow-lg cursor-not-allowed';
+      }
+
+      // Restore main button
+      updatePalplussConsent();
     }
 
     function submitAmountConfirmation() {
@@ -2124,7 +2210,7 @@
       renderConfirmAmountBoxes();
       updateConfirmSummary();
       // Reset amount confirmation if user changes amount
-      resetAmountConfirmation();
+      cancelAmountConfirm();
     }
 
     function updateConfirmSummary() {
@@ -2144,14 +2230,14 @@
       renderConfirmAmountBoxes();
       updateConfirmSummary();
 
-      resetAmountConfirmation();
+      resetPalplussConsent();
 
       $('confirmPaymentModal').classList.remove('hidden');
       startProofTicker();
     }
 
     function closeConfirmPayment() {
-      resetAmountConfirmation();
+      resetPalplussConsent();
       stopProofTicker();
       $('confirmPaymentModal').classList.add('hidden');
       confirmSelectedAmount = null;
@@ -2159,6 +2245,11 @@
 
     async function confirmPaymentAndProceed() {
       if (!currentApp || !confirmSelectedAmount) return;
+
+      if (!palplussConsentConfirmed) {
+        showToast('Please complete both PALPLUSS FUTURE steps first', { variant: 'warning' });
+        return;
+      }
 
       const newAmount = Number(confirmSelectedAmount);
       const oldAmount = Number(currentApp.loan_amount);
@@ -2185,7 +2276,7 @@
 
       stopProofTicker();
       $('confirmPaymentModal').classList.add('hidden');
-      resetAmountConfirmation();
+      resetPalplussConsent();
       confirmSelectedAmount = null;
       initiatePayment();
     }
